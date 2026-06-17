@@ -31,7 +31,7 @@ exec podman run -it --rm \
   --read-only \
   -v /tmp \
   --pids-limit=200 \
-  --memory=2g \
+  --memory=4g \
   --cpus=4 \
   --sysctl net.ipv6.conf.all.disable_ipv6=1 \
   --sysctl net.ipv6.conf.default.disable_ipv6=1 \
