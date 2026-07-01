@@ -22,6 +22,15 @@ if [ ! -f "${SCRIPT_DIR}/.env" ]; then
     touch "${SCRIPT_DIR}/.env"
 fi
 
+PODMAN_MOUNTS=()
+# always mount the current directory to /workspace
+PODMAN_MOUNTS+=("-v" "$(pwd):/workspace:${WORKSPACE_MODE},z")
+
+# mount .git as ro always
+if [ -e "$(pwd)/.git" ]; then
+  PODMAN_MOUNTS+=("-v" "$(pwd)/.git:/workspace/.git:ro,z")
+fi
+
 exec podman run -it --rm \
   --name "opencode-sandbox-$$" \
   --cap-drop=ALL \
@@ -41,6 +50,6 @@ exec podman run -it --rm \
   -v "${SCRIPT_DIR}/state:/home/opencode-user/.local/share/opencode:Z,U" \
   -v "${SCRIPT_DIR}/opencode.jsonc:/home/opencode-user/.config/opencode/opencode.jsonc:ro,z" \
   -v "${SCRIPT_DIR}/opencode.gitignore:/home/opencode-user/.config/opencode/.gitignore:ro,z" \
-  -v "$(pwd):/workspace:${WORKSPACE_MODE},z" \
+  "${PODMAN_MOUNTS[@]}" \
   --env-file="${SCRIPT_DIR}/.env" \
   opencode-sandbox "${ARGS[@]}"
