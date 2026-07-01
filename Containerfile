@@ -36,6 +36,10 @@ RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf /tmp/${GO_VERSION}.linux-amd64.tar.gz && \
     rm /tmp/${GO_VERSION}.linux-amd64.tar.gz
 
+ENV GOPATH="/tmp/go"
+ENV GOCACHE="/tmp/go/cache"
+ENV GOMODCACHE="/tmp/go/modcache"
+
 ENV PATH="/usr/local/go/bin:/opt/opencode/.opencode/bin:${PATH}"
 
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
