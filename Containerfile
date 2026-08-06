@@ -31,11 +31,15 @@ RUN wget -O /tmp/install https://opencode.ai/install && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
     rm -f /tmp/install
 
-ARG GO_VERSION=go1.26.3
+ARG GO_VERSION=go1.26.5
 RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && \
     tar -C /usr/local -xzf /tmp/${GO_VERSION}.linux-amd64.tar.gz && \
     rm /tmp/${GO_VERSION}.linux-amd64.tar.gz
+
+ENV GOPATH="/tmp/go"
+ENV GOCACHE="/tmp/go/cache"
+ENV GOMODCACHE="/tmp/go/modcache"
 
 ARG ZIG_VERSION=0.16.0
 RUN wget -O /tmp/zig.tar.xz https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz && \
@@ -46,9 +50,8 @@ RUN wget -O /tmp/zig.tar.xz https://ziglang.org/download/${ZIG_VERSION}/zig-x86_
     ln -s /usr/local/zig/zig /usr/local/bin/zig && \
     rm -rf /tmp/zig /tmp/zig.tar.xz
 
-ENV GOPATH="/tmp/go"
-ENV GOCACHE="/tmp/go/cache"
-ENV GOMODCACHE="/tmp/go/modcache"
+ENV ZIG_LOCAL_CACHE_DIR="/tmp/zig-cache"
+ENV ZIG_GLOBAL_CACHE_DIR="/tmp/zig-global-cache"
 
 ENV PATH="/usr/local/go/bin:/opt/opencode/.opencode/bin:${PATH}"
 
