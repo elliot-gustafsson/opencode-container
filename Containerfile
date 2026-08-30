@@ -31,7 +31,7 @@ RUN wget -O /tmp/install https://opencode.ai/install && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
     rm -f /tmp/install
 
-ARG GO_VERSION=go1.26.5
+ARG GO_VERSION=go1.27.0
 RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && \
     tar -C /usr/local -xzf /tmp/${GO_VERSION}.linux-amd64.tar.gz && \
