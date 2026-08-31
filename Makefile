@@ -14,6 +14,7 @@ build:
 install: build
 	chmod +x $(SCRIPT)
 	mkdir -p state
+	mkdir -p /home/$(USER)/.local/bin
 	ln -sf $(shell pwd)/$(SCRIPT) $(BIN_DIR)/$(LINK_NAME)
 
 update:
