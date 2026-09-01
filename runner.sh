@@ -76,7 +76,7 @@ exec podman run -it --rm \
   -e XDG_STATE_HOME=/home/opencode-user/.local/share/opencode/xdg_state \
   -e XDG_CACHE_HOME=/tmp/cache \
   -e OPENCODE_DISABLE_AUTOUPDATE=1 \
-  -e OPENCODE_INSTRUCTIONS='["/tmp/RULES.md"]' \
+  -e OPENCODE_CONFIG_CONTENT='{"instructions": ["/tmp/RULES.md"]}' \
   -v "${SCRIPT_DIR}/state:/home/opencode-user/.local/share/opencode:Z,U" \
   -v "${SCRIPT_DIR}/opencode.jsonc:/home/opencode-user/.config/opencode/opencode.jsonc:ro,z" \
   -v "${SCRIPT_DIR}/opencode.gitignore:/home/opencode-user/.config/opencode/.gitignore:ro,z" \
