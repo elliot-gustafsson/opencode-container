@@ -14,8 +14,8 @@ RUN microdnf update -y && \
     iproute \
     util-linux \
     libcap \
-    rust \
-    cargo \
+    gcc \
+    lld \
     && \
     microdnf clean all
 
@@ -31,6 +31,10 @@ RUN wget -O /tmp/install https://opencode.ai/install && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
     rm -f /tmp/install
 
+ENV PATH="/opt/opencode/.opencode/bin:${PATH}"
+
+############# go #############
+
 ARG GO_VERSION=go1.27.0
 RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && \
@@ -40,6 +44,10 @@ RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
 ENV GOPATH="/tmp/go"
 ENV GOCACHE="/tmp/go/cache"
 ENV GOMODCACHE="/tmp/go/modcache"
+
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+############# zig #############
 
 ARG ZIG_VERSION=0.16.0
 RUN wget -O /tmp/zig.tar.xz https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz && \
@@ -53,7 +61,19 @@ RUN wget -O /tmp/zig.tar.xz https://ziglang.org/download/${ZIG_VERSION}/zig-x86_
 ENV ZIG_LOCAL_CACHE_DIR="/tmp/zig-cache"
 ENV ZIG_GLOBAL_CACHE_DIR="/tmp/zig-global-cache"
 
-ENV PATH="/usr/local/go/bin:/opt/opencode/.opencode/bin:${PATH}"
+############# rust #############
+
+ARG RUST_VERSION=1.96.0
+ENV RUSTUP_HOME="/usr/local/rustup"
+RUN export CARGO_HOME="/usr/local/cargo" && \
+    wget -qO- https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain ${RUST_VERSION} && \
+    chmod -R a+rx /usr/local/rustup /usr/local/cargo
+
+ENV CARGO_HOME="/tmp/cargo"
+ENV CARGO_TARGET_DIR="/tmp/cargo/target"
+ENV RUSTFLAGS="-C link-arg=-fuse-ld=lld"
+
+ENV PATH="/tmp/cargo/bin:/usr/local/cargo/bin:${PATH}"
 
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 
