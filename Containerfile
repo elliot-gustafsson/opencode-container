@@ -35,7 +35,7 @@ ENV PATH="/opt/opencode/.opencode/bin:${PATH}"
 
 ############# go #############
 
-ARG GO_VERSION=go1.27.0
+ARG GO_VERSION=go1.27.1
 RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && \
     tar -C /usr/local -xzf /tmp/${GO_VERSION}.linux-amd64.tar.gz && \
