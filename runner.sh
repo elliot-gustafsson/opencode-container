@@ -65,6 +65,8 @@ exec podman run -it --rm \
   --cap-drop=ALL \
   --cap-add=CAP_NET_ADMIN \
   --cap-add=CAP_SETPCAP \
+  --dns=1.1.1.1 \
+  --dns=8.8.8.8 \
   --userns=keep-id:uid=1000,gid=1000 \
   --read-only \
   -v /tmp \
