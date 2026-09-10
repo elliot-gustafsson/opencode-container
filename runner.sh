@@ -3,10 +3,14 @@
 WORKSPACE_MODE="ro"
 ARGS=()
 
+ALLOW_INTERNAL_IPS="0"
 for arg in "$@"; do
   if [ "$arg" = "-rw" ]; then
     WORKSPACE_MODE="rw"
     echo "starting opencode in rw mode"
+  elif [ "$arg" = "-lan" ]; then
+    ALLOW_INTERNAL_IPS="1"
+    echo "starting opencode with internal network access"
   else
     ARGS+=("$arg")
   fi
@@ -60,13 +64,17 @@ fi
 
 PODMAN_MOUNTS+=("-v" "${ACTIVE_RULES}:/tmp/RULES.md:ro,z")
 
+PODMAN_DNS=()
+if [ "$ALLOW_INTERNAL_IPS" != "1" ]; then
+  PODMAN_DNS+=("--dns=1.1.1.1" "--dns=8.8.8.8")
+fi
+
 exec podman run -it --rm \
   --name "opencode-sandbox-$$" \
   --cap-drop=ALL \
   --cap-add=CAP_NET_ADMIN \
   --cap-add=CAP_SETPCAP \
-  --dns=1.1.1.1 \
-  --dns=8.8.8.8 \
+  "${PODMAN_DNS[@]}" \
   --userns=keep-id:uid=1000,gid=1000 \
   --read-only \
   -v /tmp \
@@ -77,6 +85,7 @@ exec podman run -it --rm \
   --sysctl net.ipv6.conf.default.disable_ipv6=1 \
   -e XDG_STATE_HOME=/home/opencode-user/.local/share/opencode/xdg_state \
   -e XDG_CACHE_HOME=/tmp/cache \
+  -e ALLOW_INTERNAL_IPS="$ALLOW_INTERNAL_IPS" \
   -e OPENCODE_DISABLE_AUTOUPDATE=1 \
   -e OPENCODE_CONFIG_CONTENT='{"instructions": ["/tmp/RULES.md"]}' \
   -v "${SCRIPT_DIR}/state:/home/opencode-user/.local/share/opencode:Z,U" \
