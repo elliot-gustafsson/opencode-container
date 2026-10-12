@@ -17,7 +17,7 @@ install: build
 	ln -sf $(shell pwd)/$(SCRIPT) $(BIN_DIR)/$(LINK_NAME)
 
 update:
-	podman build --no-cache -t $(IMAGE_NAME) -f Containerfile .
+	podman build -t $(IMAGE_NAME) -f Containerfile .
 
 clean:
 	rm -f $(BIN_DIR)/$(LINK_NAME)

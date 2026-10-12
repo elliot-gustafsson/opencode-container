@@ -26,13 +26,6 @@ RUN useradd -m -s /bin/bash opencode-user && \
     mkdir -p /workspace && \
     chown opencode-user:opencode-user /workspace
 
-RUN wget -O /tmp/install https://opencode.ai/install && \
-    HOME=/opt/opencode bash /tmp/install && \
-    chmod 755 /opt/opencode/.opencode/bin/opencode && \
-    rm -f /tmp/install
-
-ENV PATH="/opt/opencode/.opencode/bin:${PATH}"
-
 ############# go #############
 
 ARG GO_VERSION=go1.27.1
@@ -74,6 +67,18 @@ ENV CARGO_TARGET_DIR="/tmp/cargo/target"
 ENV RUSTFLAGS="-C link-arg=-fuse-ld=lld"
 
 ENV PATH="/tmp/cargo/bin:/usr/local/cargo/bin:${PATH}"
+
+############# opencode #############
+
+# Releases: https://github.com/anomalyco/opencode/tags
+ARG OPENCODE_VERSION=2.0.27
+RUN wget -O /tmp/install https://opencode.ai/v2/install && \
+    HOME=/opt/opencode bash /tmp/install --version ${OPENCODE_VERSION} && \
+    chmod 755 /opt/opencode/.opencode/bin/opencode && \
+    rm -f /tmp/install
+
+ENV PATH="/opt/opencode/.opencode/bin:${PATH}"
+
 
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 
