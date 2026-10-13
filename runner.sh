@@ -91,6 +91,7 @@ exec podman run -it --rm \
   -v "${SCRIPT_DIR}/state:/home/opencode-user/.local/share/opencode:Z,U" \
   -v "${SCRIPT_DIR}/opencode.jsonc:/home/opencode-user/.config/opencode/opencode.jsonc:ro,z" \
   -v "${SCRIPT_DIR}/opencode_service.json:/home/opencode-user/.config/opencode/service.json:ro,z" \
+  -v "${SCRIPT_DIR}/opencode_cli.json:/home/opencode-user/.config/opencode/cli.json:ro,z" \
   -v "${SCRIPT_DIR}/opencode.gitignore:/home/opencode-user/.config/opencode/.gitignore:ro,z" \
   "${PODMAN_MOUNTS[@]}" \
   --env-file="${SCRIPT_DIR}/.env" \
