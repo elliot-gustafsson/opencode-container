@@ -74,11 +74,17 @@ exec podman run -it --rm \
   --cap-drop=ALL \
   --cap-add=CAP_NET_ADMIN \
   --cap-add=CAP_SETPCAP \
+  --cap-add=CAP_SETUID \
+  --cap-add=CAP_SETGID \
+  --security-opt seccomp=unconfined \
+  --security-opt label=disable \
+  --device /dev/fuse \
+  --device /dev/net/tun \
   "${PODMAN_DNS[@]}" \
   --userns=keep-id:uid=1000,gid=1000 \
   --read-only \
   -v /tmp \
-  --pids-limit=200 \
+  --pids-limit=512 \
   --memory=4g \
   --cpus=4 \
   --sysctl net.ipv6.conf.all.disable_ipv6=1 \

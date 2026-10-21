@@ -16,15 +16,54 @@ RUN microdnf update -y && \
     libcap \
     gcc \
     lld \
-    && \
+    podman \
+    fuse-overlayfs \
+	&& \
     microdnf clean all
+
+############# php #############
+RUN microdnf install -y epel-release && \
+    rpm -Uvh https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
+    microdnf module enable -y php:remi-8.5 && \
+    microdnf install -y \
+        php-cli \
+        php-bcmath \
+        php-gd \
+        php-intl \
+        php-ldap \
+        php-mbstring \
+        php-mysqlnd \
+        php-pgsql \
+        php-soap \
+        php-xml \
+        php-pecl-grpc \
+        php-pecl-opentelemetry \
+        php-pecl-redis6 \
+        php-pecl-ssh2 \
+        php-pecl-xdebug3 \
+        php-pecl-yaml \
+        php-pecl-zip && \
+    microdnf clean all && \
+    wget -O /usr/local/bin/composer https://getcomposer.org/download/latest-stable/composer.phar && \
+    chmod 755 /usr/local/bin/composer
+
+ENV COMPOSER_HOME="/tmp/composer"
+ENV COMPOSER_CACHE_DIR="/tmp/composer/cache"
+ENV PATH="/tmp/composer/vendor/bin:${PATH}"
 
 # Grant the 'ip' binary network capabilities
 RUN setcap cap_net_admin+ep $(which ip)
 
 RUN useradd -m -s /bin/bash opencode-user && \
-    mkdir -p /workspace && \
-    chown opencode-user:opencode-user /workspace
+    echo "opencode-user:1001:64535" > /etc/subuid && \
+    echo "opencode-user:1001:64535" > /etc/subgid && \
+    setcap cap_setuid+ep /usr/bin/newuidmap && \
+    setcap cap_setgid+ep /usr/bin/newgidmap && \
+    mkdir -p /workspace /etc/containers /home/opencode-user/.local/share /home/opencode-user/.config/opencode && \
+    ln -s /tmp/containers /home/opencode-user/.local/share/containers && \
+    chown -R opencode-user:opencode-user /workspace /home/opencode-user/.local /home/opencode-user/.config && \
+    printf '[storage]\ndriver = "overlay"\nrunroot = "/tmp/containers/run"\ngraphroot = "/tmp/containers/storage"\n\n[storage.options.overlay]\nmount_program = "/usr/bin/fuse-overlayfs"\n' > /etc/containers/storage.conf && \
+    printf '[containers]\npidns = "host"\ncgroups = "no-conmon"\ndefault_sysctls = []\n\n[engine]\ncgroup_manager = "cgroupfs"\nevents_logger = "file"\n' > /etc/containers/containers.conf
 
 ############# go #############
 

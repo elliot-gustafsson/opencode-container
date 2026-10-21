@@ -8,15 +8,17 @@ if [ "$ALLOW_INTERNAL_IPS" != "1" ]; then
     ip route add blackhole 169.254.0.0/16
 fi
 
-mkdir -p /tmp/state /tmp/cache
-chown -R 1000:1000 /tmp/state /tmp/cache /home/opencode-user/.local/share/opencode
+
+mkdir -p /tmp/state /tmp/cache /tmp/run /tmp/containers/run /tmp/containers/storage
+chmod 700 /tmp/run
+chown -R 1000:1000 /tmp/state /tmp/cache /tmp/run /tmp/containers /home/opencode-user/.local/share/opencode
 
 export HOME="/home/opencode-user"
 export USER="opencode-user"
 export LOGNAME="opencode-user"
+export XDG_RUNTIME_DIR="/tmp/run"
 
 exec setpriv \
     --inh-caps=-all \
-    --bounding-set=-all \
-    --no-new-privs \
+    --bounding-set=-net_admin,-setpcap \
     -- /opt/opencode/.opencode/bin/opencode "$@"
