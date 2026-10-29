@@ -69,11 +69,18 @@ if [ "$ALLOW_INTERNAL_IPS" != "1" ]; then
   PODMAN_DNS+=("--dns=1.1.1.1" "--dns=8.8.8.8")
 fi
 
+if command -v slirp4netns >/dev/null 2>&1; then
+  PODMAN_NETWORK="--network=slirp4netns:enable_ipv6=false"
+else
+  PODMAN_NETWORK="--network=pasta:--ipv4-only"
+fi
+
 exec podman run -it --rm \
   --name "opencode-sandbox-$$" \
   --cap-drop=ALL \
   --cap-add=CAP_NET_ADMIN \
   --cap-add=CAP_SETPCAP \
+  "$PODMAN_NETWORK" \
   "${PODMAN_DNS[@]}" \
   --userns=keep-id:uid=1000,gid=1000 \
   --read-only \
