@@ -28,7 +28,7 @@ RUN useradd -m -s /bin/bash opencode-user && \
 
 ############# go #############
 
-ARG GO_VERSION=go1.27.1
+ARG GO_VERSION=go1.27.3
 RUN wget -P /tmp https://go.dev/dl/${GO_VERSION}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && \
     tar -C /usr/local -xzf /tmp/${GO_VERSION}.linux-amd64.tar.gz && \
@@ -56,7 +56,7 @@ ENV ZIG_GLOBAL_CACHE_DIR="/tmp/zig-global-cache"
 
 ############# rust #############
 
-ARG RUST_VERSION=1.96.0
+ARG RUST_VERSION=1.99.1
 ENV RUSTUP_HOME="/usr/local/rustup"
 RUN export CARGO_HOME="/usr/local/cargo" && \
     wget -qO- https://sh.rustup.rs | sh -s -- -y --no-modify-path --default-toolchain ${RUST_VERSION} && \
@@ -71,7 +71,7 @@ ENV PATH="/tmp/cargo/bin:/usr/local/cargo/bin:${PATH}"
 ############# opencode #############
 
 # Releases: https://github.com/anomalyco/opencode/tags
-ARG OPENCODE_VERSION=2.0.27
+ARG OPENCODE_VERSION=2.2.2
 RUN wget -O /tmp/install https://opencode.ai/v2/install && \
     HOME=/opt/opencode bash /tmp/install --version ${OPENCODE_VERSION} && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
