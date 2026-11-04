@@ -42,7 +42,7 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 ############# zig #############
 
-ARG ZIG_VERSION=0.16.0
+ARG ZIG_VERSION=0.17.0
 RUN wget -O /tmp/zig.tar.xz https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz && \
     rm -rf /usr/local/zig && \
     mkdir /tmp/zig && \
@@ -71,7 +71,7 @@ ENV PATH="/tmp/cargo/bin:/usr/local/cargo/bin:${PATH}"
 ############# opencode #############
 
 # Releases: https://github.com/anomalyco/opencode/tags
-ARG OPENCODE_VERSION=2.2.2
+ARG OPENCODE_VERSION=2.2.5
 RUN wget -O /tmp/install https://opencode.ai/v2/install && \
     HOME=/opt/opencode bash /tmp/install --version ${OPENCODE_VERSION} && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
