@@ -71,7 +71,7 @@ ENV PATH="/tmp/cargo/bin:/usr/local/cargo/bin:${PATH}"
 ############# opencode #############
 
 # Releases: https://github.com/anomalyco/opencode/tags
-ARG OPENCODE_VERSION=2.2.5
+ARG OPENCODE_VERSION=2.2.7
 RUN wget -O /tmp/install https://opencode.ai/v2/install && \
     HOME=/opt/opencode bash /tmp/install --version ${OPENCODE_VERSION} && \
     chmod 755 /opt/opencode/.opencode/bin/opencode && \
